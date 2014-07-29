@@ -10,7 +10,7 @@ class thread_recv_msg(threading.Thread):
 		self.my_port = my_port
 	def run(self):
 		while True:
-			msg = my_communication.recv()
+			msg_packet = my_communication.recv()
 			app.msg_recieved(msg)
 		
 class Connection:
@@ -23,30 +23,19 @@ class Connection:
 		thread_recv = thread_recv_msg(self.my_port)
 		thread_recv.start()		
 
-class Ui(Frame):
+class ak():
 
-	def __init__(self, parent):
-		Frame.__init__(self, parent, background="white")   
-		self.parent = parent
-		self.initUI()
 
-	def initUI(self):
-		self.parent.title("Simple")
-		self.pack(fill=BOTH, expand=1)
-		self.label_string = StringVar()
-		self.label = Label(self, text=0, textvariable=self.label_string)        
-		self.label.place(x=20, y=20)
-		self.e = Entry(self)
-		self.e.pack()
-		self.button = Button(self, text="OK", command = self.send_msg)
-		self.button.pack(side=RIGHT)
-		my_connection.recv_msg()
+	
 	
 	def send_msg(self):
-		my_connection.send_msg(self.e.get())
+		print "enter"
+		message=raw_input()
+		my_connection.send_msg(message)
+		my_connection.recv_msg()
 		
-	def msg_recieved(self,msg):
-		self.label_string.set(msg)
+	def msg_recieved(msg):
+		print msg
 		
 
 my_connection = Connection()
@@ -58,7 +47,7 @@ my_connection.my_port = int(argv[2])
 my_connection.send_port = int(argv[3])
 my_communication = Communication(my_connection.ip,my_connection.my_port,my_connection.send_port)
         
-root = Tk()
-root.geometry("250x150+300+300")
-app = Ui(root)
-root.mainloop()
+
+app = ak()
+app.send_msg()
+
