@@ -9,9 +9,10 @@ class thread_recv_msg(threading.Thread):
 		threading.Thread.__init__(self)
 		self.my_port = my_port
 	def run(self):
+		global my_communication
 		while True:
 			msg_packet = my_communication.recv()
-			app.msg_recieved(msg)
+			app.msg_recieved(msg_packet)
 		
 class Connection:
 	ip=''
@@ -29,23 +30,27 @@ class ak():
 	
 	
 	def send_msg(self):
-		print "enter"
-		message=raw_input()
-		my_connection.send_msg(message)
-		my_connection.recv_msg()
+		global my_connection
+		while True:
+
+			message=raw_input()
+			my_connection.send_msg(message)
 		
-	def msg_recieved(msg):
-		print msg
+	def msg_recieved(self,msg_packet):
+		print msg_packet[1]+": "+msg_packet[0]
 		
 
-my_connection = Connection()
 if len(argv)!=4:
 	print "Usage: python app.py <ip> <port to listen> <port to send>"
 	exit(0)
+
+my_communication = Communication(argv[1],int(argv[2]),int(argv[3]))
+
+my_connection = Connection()
+my_connection.recv_msg()
 my_connection.ip = argv[1]
 my_connection.my_port = int(argv[2])
 my_connection.send_port = int(argv[3])
-my_communication = Communication(my_connection.ip,my_connection.my_port,my_connection.send_port)
         
 
 app = ak()
